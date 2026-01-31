@@ -1,21 +1,14 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 df_niigata = pd.read_csv("FEH_00500209_260126084514.csv", encoding="shift-jis")
 df_nagano = pd.read_csv("FEH_00500209_260126103754.csv", encoding="shift-jis")
-
-# st.write("matplotlib import OK")
-
-# st.write("CSV 読み込みテスト開始")
-
-plt.rcParams['font.family'] = 'DejaVu Sans'
 
 df_style = pd.concat([df_niigata, df_nagano], ignore_index=True)
 
 with st.sidebar.expander("抽出条件を設定する", expanded=True):
 
-    # 地域選択
     local1 = st.selectbox(
         "新潟県地域",
         df_niigata["(J315-02-2-001)新潟県地域"].unique()
@@ -29,7 +22,6 @@ with st.sidebar.expander("抽出条件を設定する", expanded=True):
         "経営体系の選択",
         df_style["(J301-02-1-001)農林業経営体数"].unique()
     )
-
 
 df_niigata_sel = df_niigata[
     (df_niigata["(J315-02-2-001)新潟県地域"] == local1) &
@@ -45,31 +37,29 @@ if df_niigata_sel.empty or df_nagano_sel.empty:
     st.error("選択した条件に一致するデータがありません")
     st.write("新潟側抽出結果：", df_niigata_sel)
     st.write("長野側抽出結果：", df_nagano_sel)
+
 else:
-    
     value_niigata = pd.to_numeric(df_niigata_sel["value"].iloc[0], errors="coerce")
     value_nagano = pd.to_numeric(df_nagano_sel["value"].iloc[0], errors="coerce")
 
-    
     st.metric("新潟県の値：", value_niigata)
     st.metric("長野県の値：", value_nagano)
 
-    
-    st.subheader(f"{style} の比較（{local1} vs {local2}）")
-    st.write("x軸：新潟県・長野県")
-    st.write("y軸：農林業経営体数")
 
-    fig, ax = plt.subplots()
-    ax.bar(["新潟県", "長野県"], [value_niigata, value_nagano],
-            color=["skyblue", "lightgreen"])
-    
-    
+    # Plotly グラフ作成
+    fig = go.Figure(data=[
+        go.Bar(name="新潟県", x=["新潟県"], y=[value_niigata], marker_color="skyblue"),
+        go.Bar(name="長野県", x=["長野県"], y=[value_nagano], marker_color="lightgreen")
+    ])
+
+    fig.update_layout(
+        title=f"{style} の比較（{local1} vs {local2}）",
+        yaxis_title="農林業経営体数",
+        xaxis_title="地域",
+        bargap=0.4
+    )
 
     detail = st.toggle("ON/OFF")
 
     if detail:
-        st.pyplot(fig)
-    
-
-# st.write("新潟 抽出件数:", len(df_niigata_sel))
-# st.write("長野 抽出件数:", len(df_nagano_sel))
+        st.plotly_chart(fig, use_container_width=True)
