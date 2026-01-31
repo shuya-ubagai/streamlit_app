@@ -33,6 +33,8 @@ df_nagano_sel = df_nagano[
     (df_nagano["(J301-02-1-001)農林業経営体数"] == style)
 ]
 
+detail = st.toggle("ON/OFF")
+
 if df_niigata_sel.empty or df_nagano_sel.empty:
     st.error("選択した条件に一致するデータがありません")
     st.write("新潟側抽出結果：", df_niigata_sel)
@@ -45,8 +47,6 @@ else:
     st.metric("新潟県の値：", value_niigata)
     st.metric("長野県の値：", value_nagano)
 
-
-    # Plotly グラフ作成
     fig = go.Figure(data=[
         go.Bar(name="新潟県", x=["新潟県"], y=[value_niigata], marker_color="skyblue"),
         go.Bar(name="長野県", x=["長野県"], y=[value_nagano], marker_color="lightgreen")
@@ -58,8 +58,6 @@ else:
         xaxis_title="地域",
         bargap=0.4
     )
-
-    detail = st.toggle("ON/OFF")
 
     if detail:
         st.plotly_chart(fig, use_container_width=True)
