@@ -9,6 +9,7 @@ df_nagano = pd.read_csv("FEH_00500209_260126103754.csv", encoding="shift-jis")
 
 # st.write("CSV 読み込みテスト開始")
 
+plt.rcParams['font.family'] = 'DejaVu Sans'
 
 df_style = pd.concat([df_niigata, df_nagano], ignore_index=True)
 
