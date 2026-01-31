@@ -5,7 +5,10 @@ import matplotlib.pyplot as plt
 df_niigata = pd.read_csv("FEH_00500209_260126084514.csv", encoding="shift-jis")
 df_nagano = pd.read_csv("FEH_00500209_260126103754.csv", encoding="shift-jis")
 
-plt.rcParams['font.family'] = 'MS Gothic'
+# st.write("matplotlib import OK")
+
+# st.write("CSV 読み込みテスト開始")
+
 
 df_style = pd.concat([df_niigata, df_nagano], ignore_index=True)
 
@@ -51,13 +54,21 @@ else:
     st.metric("長野県の値：", value_nagano)
 
     
+    st.subheader(f"{style} の比較（{local1} vs {local2}）")
+    st.write("x軸：新潟県・長野県")
+    st.write("y軸：農林業経営体数")
+
     fig, ax = plt.subplots()
     ax.bar(["新潟県", "長野県"], [value_niigata, value_nagano],
-           color=["skyblue", "lightgreen"])
-    ax.set_ylabel("農林経営体数")
-    ax.set_title(f"{style} の比較（{local1} vs {local2}）")
+            color=["skyblue", "lightgreen"])
+    
+    
 
     detail = st.toggle("ON/OFF")
-    
+
     if detail:
         st.pyplot(fig)
+    
+
+# st.write("新潟 抽出件数:", len(df_niigata_sel))
+# st.write("長野 抽出件数:", len(df_nagano_sel))
