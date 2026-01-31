@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 df_niigata = pd.read_csv("FEH_00500209_260126084514.csv", encoding="shift-jis")
 df_nagano = pd.read_csv("FEH_00500209_260126103754.csv", encoding="shift-jis")
 
+plt.rcParams['font.family'] = 'MS Gothic'
+
 df_style = pd.concat([df_niigata, df_nagano], ignore_index=True)
 
 with st.sidebar.expander("抽出条件を設定する", expanded=True):
